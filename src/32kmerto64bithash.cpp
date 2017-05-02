@@ -100,8 +100,7 @@ void sequenceConvertor(char* sequencefile, char* hashfile){
 void hashConvertor(char* hashfile, char* sequencefile){
 	ifstream inputfile(hashfile,ifstream::in | ifstream::binary);
 	ofstream outputfile(sequencefile, ofstream::out);
-        ls
-        
+
 	vector<uint64_t> hashes;
 	vector<string> lines;
 	int batch_size = 1000000;
