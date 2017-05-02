@@ -8,7 +8,7 @@ include(MultiIndexHelper)
 
 enable_testing()
 
-project(multi_idx CXX C)
+project(multi_idx CXX)
 
 append_cxx_compiler_flags("-msse4.2 -std=c++14 -Wall -DNDEBUG" "GCC" CMAKE_CXX_FLAGS)
 append_cxx_compiler_flags("-O3 -ffast-math -funroll-loops" "GCC" CMAKE_CXX_FLAGS)
@@ -45,6 +45,7 @@ TARGET_LINK_LIBRARIES(bench_scan3 sdsl multi_idx)
 
 #ADD_EXECUTABLE(cluster_statistics src/cluster_statistics.cpp)
 #TARGET_LINK_LIBRARIES(cluster_statistics sdsl multi_idx)
+ADD_EXECUTABLE(kmers_convertor src/32kmerto64bithash.cpp)
 
 ADD_SUBDIRECTORY(data)
 

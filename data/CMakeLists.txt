@@ -15,7 +15,6 @@ SET(base_url "http://xor.di.unipi.it/~rossano")
 #    endif(NOT EXISTS ${abs_test_case})
 #ENDFOREACH(test_case)
 
-ADD_EXECUTABLE(kmers_convertor src/32kmerto64bithash.cpp)
 
 SET(test_cases PARENT_SCOPE)
 SET(local_kmer_files merged_illumina_31_onlykmers.txt)
@@ -30,4 +29,4 @@ FOREACH (kmer_file ${local_kmer_files})
                             VERBATIM)
     endif(NOT EXISTS ${abs_kmer_file})
     LIST(APPEND test_cases ${abs_kmer_file})
-ENDFOREACH
+ENDFOREACH(kmer_file)
