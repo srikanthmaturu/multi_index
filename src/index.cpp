@@ -243,7 +243,7 @@ int main(int argc, char* argv[]){
 
                   for (size_t i=0; i<qry.size(); ++i){
                       auto result = pi.match(qry[i]);
-                      result = unique_vec(result);
+                      result = get<0>(unique_vec(result));
                       query_results << "\n\n\n\nQuerySequence: \t" << reverseHash(qry[i]) << endl;
                       query_results << "\n\nSimilar sequences:\n";
                       
