@@ -5,6 +5,7 @@
 #include <iostream>
 #include <vector>
 #include <sstream>
+#include "32kmerto64bithash.cpp"
 
 using namespace std;
 using namespace sdsl;
@@ -171,7 +172,7 @@ int main(int argc, char* argv[]){
         } else {
             cout << "Loaded " << qry.size()<< " queries form file "<<qry_file << endl;
         }
-
+        
         if(!search_only or (search_only and print_info)) {
             cout << "# hash_file = " << hash_file << endl;
             cout << "# hashes = " << pi.size() << endl;
@@ -229,6 +230,8 @@ int main(int argc, char* argv[]){
                 cout << "# candidates_per_query = " << ((double)check_cnt)/qry.size() << endl;
                 cout << "# check_cnt_search = " << check_cnt << endl;
             } else {
+                string query_search_results_file = qry_file + "_query_search_results.hash";
+                ofstream query_results(query_search_results_file);
                 check_cnt = 0;
                 {
                   auto start = timer::now();
@@ -237,7 +240,19 @@ int main(int argc, char* argv[]){
                     }
                   auto stop = timer::now();
                   cout << "# time_per_search_query_in_us = " << duration_cast<chrono::microseconds>(stop-start).count()/(double)qry.size() << endl;
+
+                  for (size_t i=0; i<qry.size(); ++i){
+                      auto result = pi.match(qry[i]);
+                      result = unique_vec(result);
+                      query_results << "\n\n\n\nQuerySequence: \t" << reverseHash(qry[i]) << endl;
+                      query_results << "\n\nSimilar sequences:\n";
+                      
+                      for (size_t j=0; j<result.size(); ++j){
+                          query_results << "\t\t" << reverseHash(result[j]) << endl;
+                      }
+                  }
               }
+              query_results.close();
             }
         }
         else
