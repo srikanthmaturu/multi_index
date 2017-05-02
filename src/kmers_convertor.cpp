@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-#include <32kmerto64bithash.cpp>
+#include "32kmerto64bithash.cpp"
 
 int main(int argc, char** argv){
 	if(argc < 4){

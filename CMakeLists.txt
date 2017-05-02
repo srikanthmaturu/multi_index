@@ -49,6 +49,30 @@ ADD_EXECUTABLE(kmers_convertor src/kmers_convertor.cpp)
 
 ADD_SUBDIRECTORY(data)
 
+# Generate traget for converting the kmer text files in to hashes
+
+SET(kmer_hash_files )
+SET(unbuilt_kmer_hash_files )
+FOREACH (kmer_file ${local_kmer_files})
+    SET(abs_kmer_file ${CMAKE_HOME_DIRECTORY}/data/${kmer_file})
+    IF(NOT EXISTS ${abs_kmer_file}.hash)
+        ADD_CUSTOM_COMMAND(OUTPUT ${abs_kmer_file}.hash
+                            COMMAND $<TARGET_FILE:kmers_convertor> 0 ${abs_kmer_file} ${abs_kmer_file}.hash
+                            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+                            DEPENDS kmers_convertor
+                            COMMENT "Converting ${abs_test_case} to hash file."
+                            VERBATIM)
+	ADD_CUSTOM_TARGET(${kmer_file}.hash
+				DEPENDS ${abs_kmer_file}.hash)
+	LIST(APPEND unbuilt_kmer_hash_files ${kmer_file}.hash)
+    endif(NOT EXISTS ${abs_kmer_file}.hash)
+	LIST(APPEND kmer_hash_files ${kmer_file}.hash)
+ENDFOREACH(kmer_file)
+
+ADD_CUSTOM_TARGET(kmer-hash-files 
+			DEPENDS ${unbuilt_kmer_hash_files})
+LIST(APPEND test_cases ${kmer_hash_files})
+
 #  Generate target for the construction of key databases and queries
 FOREACH(test_case ${test_cases})
     SET(abs_test_case ${CMAKE_HOME_DIRECTORY}/data/${test_case})
@@ -59,7 +83,7 @@ FOREACH(test_case ${test_cases})
                            COMMAND cat ${abs_test_case}.existing.query ${abs_test_case}.real.query > ${abs_test_case}.query
                            COMMAND head -c 400 ${abs_test_case}.existing.query > ${abs_test_case}.100.query
                            COMMAND head -c 400 ${abs_test_case}.real.query >> ${abs_test_case}.100.query
-                           DEPENDS gen_bench_data ${kmer_files}
+                           DEPENDS gen_bench_data kmer-hash-files
                            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
                            COMMENT "Generate query files for ${test_case}."
                            VERBATIM)
