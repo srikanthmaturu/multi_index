@@ -16,17 +16,19 @@ SET(base_url "http://xor.di.unipi.it/~rossano")
 #ENDFOREACH(test_case)
 
 
-SET(test_cases PARENT_SCOPE)
 SET(local_kmer_files merged_illumina_31_onlykmers.txt)
-
+SET(local_test_cases )
 FOREACH (kmer_file ${local_kmer_files})
     SET(abs_kmer_file ${CMAKE_HOME_DIRECTORY}/data/${kmer_file})
     IF(NOT EXISTS ${abs_kmer_file})
-        ADD_CUSTOM_COMMAND(OUTPUT ${abs_kmer_file}.hash
+        ADD_CUSTOM_COMMAND(OUTPUT ${kmer_file}.hash
                             COMMAND $<TARGET_FILE:kmers_convertor> 0 ${abs_kmer_file} ${abs_kmer_file}.hash
                             WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-                            COMMENT "Converting ${abs_test_case} to hash file."
+                            DEPENDS kmers_convertor
+			    COMMENT "Converting ${abs_test_case} to hash file."
                             VERBATIM)
     endif(NOT EXISTS ${abs_kmer_file})
-    LIST(APPEND test_cases ${abs_kmer_file})
+    LIST(APPEND local_test_cases ${kmer_file}.hash)
 ENDFOREACH(kmer_file)
+
+SET(test_cases ${local_test_cases} PARENT_SCOPE)
