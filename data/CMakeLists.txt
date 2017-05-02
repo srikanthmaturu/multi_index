@@ -1,7 +1,7 @@
 SET(base_url "http://xor.di.unipi.it/~rossano")
 
 # A samll default data set for testing
-SET(local_test_cases test.hash)
+SET(local_test_cases merged_illumina_31_onlykmers.txt)
 ## Uncomment the following line to use the datasets from the SIGIR 2016 paper
 #SET(local_test_cases Clueweb09-Full.SimHash Clueweb09-Full.OddSketch lsh_sift_64.hash mlh_sift_64.hash)
 SET(test_cases ${local_test_cases} PARENT_SCOPE)
@@ -14,3 +14,4 @@ FOREACH(test_case ${local_test_cases})
         FILE(DOWNLOAD ${tc_url} ${abs_test_case} SHOW_PROGRESS)
     endif(NOT EXISTS ${abs_test_case})
 ENDFOREACH(test_case)
+
