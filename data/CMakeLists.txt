@@ -30,4 +30,4 @@ FOREACH (kmer_file ${local_kmer_files})
                             VERBATIM)
     endif(NOT EXISTS ${abs_kmer_file})
     LIST(APPEND test_cases ${abs_kmer_file})
-ENDFOREACH
+ENDFOREACH(kmer_file)
