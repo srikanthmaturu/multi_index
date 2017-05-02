@@ -59,7 +59,7 @@ FOREACH(test_case ${test_cases})
                            COMMAND cat ${abs_test_case}.existing.query ${abs_test_case}.real.query > ${abs_test_case}.query
                            COMMAND head -c 400 ${abs_test_case}.existing.query > ${abs_test_case}.100.query
                            COMMAND head -c 400 ${abs_test_case}.real.query >> ${abs_test_case}.100.query
-                           DEPENDS gen_bench_data
+                           DEPENDS gen_bench_data ${kmer_files}
                            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
                            COMMENT "Generate query files for ${test_case}."
                            VERBATIM)
