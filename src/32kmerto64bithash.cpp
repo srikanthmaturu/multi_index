@@ -38,7 +38,7 @@ uint64_t computeHash(const char* sequence, int length){
 }
 
 char* reverseHash(uint64_t hash){
-	char* sequence = new char[32];
+	char* sequence = new char[33];
 	uint64_t temp;
 	for(int i = 0; i < 31; i++){
 		temp = ((3ULL << i * 2) & hash) >> i * 2 ;
