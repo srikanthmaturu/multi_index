@@ -249,7 +249,7 @@ int main(int argc, char* argv[]){
                       query_results << "\n\nSimilar sequences:\n";
                       
                       for (size_t j=0; j<result.size(); ++j){
-                          string original_query_result = reverseHash(result[j])
+                          string original_query_result = reverseHash(result[j]);
                           query_results << "\t\t" << original_query_result.c_str() << endl;
                       }
                   }
