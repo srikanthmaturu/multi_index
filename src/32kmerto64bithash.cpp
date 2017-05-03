@@ -60,6 +60,7 @@ char* reverseHash(uint64_t hash){
 		}
 	}	
 	sequence[31] = '\n';
+        sequence[32] = '\0';
 	return sequence;
 
 }
