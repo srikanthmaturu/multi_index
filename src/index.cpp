@@ -230,7 +230,7 @@ int main(int argc, char* argv[]){
                 cout << "# candidates_per_query = " << ((double)check_cnt)/qry.size() << endl;
                 cout << "# check_cnt_search = " << check_cnt << endl;
             } else {
-                string query_search_results_file = qry_file + "_query_search_results.hash";
+                string query_search_results_file = qry_file + "_search_results.txt";
                 ofstream query_results(query_search_results_file);
                 check_cnt = 0;
                 {
