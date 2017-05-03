@@ -244,11 +244,13 @@ int main(int argc, char* argv[]){
                   for (size_t i=0; i<qry.size(); ++i){
                       auto result = get<0>(pi.match(qry[i]));
                       result = unique_vec(result);
-                      query_results << "\n\n\n\nQuerySequence: \t" << reverseHash(qry[i]) << endl;
+                      string original_query = reverseHash(qry[i]);
+                      query_results << "\n\n\n\nQuerySequence: \t" << original_query.c_str() << endl;
                       query_results << "\n\nSimilar sequences:\n";
                       
                       for (size_t j=0; j<result.size(); ++j){
-                          query_results << "\t\t" << reverseHash(result[j]) << endl;
+                          string original_query_result = reverseHash(result[j])
+                          query_results << "\t\t" << original_query_result.c_str() << endl;
                       }
                   }
               }
