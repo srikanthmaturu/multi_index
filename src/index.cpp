@@ -245,7 +245,7 @@ int main(int argc, char* argv[]){
                       auto result = get<0>(pi.match(qry[i]));
                       result = unique_vec(result);
                       string original_query = reverseHash(qry[i]);
-                      query_results << "\n\n\ni: \t" << original_query.c_str() << endl;
+                      query_results << "\n\n\n "<< i<< ": \t" << original_query.c_str() << endl;
                       query_results << "\n\nSimilar sequences:\n";
                       
                       for (size_t j=0; j<result.size(); ++j){
