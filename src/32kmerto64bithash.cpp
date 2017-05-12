@@ -5,7 +5,7 @@
 #include <map>
 #include <fstream>
 #include <iterator>
-
+#include <omp.h>
 using namespace std;
 
 uint64_t computeHash(const char* sequence, int length){
