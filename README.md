@@ -1,10 +1,6 @@
 Multi-Index
 =========
 
-Installation
-------------
-
-
 --------------------
 Installation Steps: |
 --------------------
@@ -28,74 +24,23 @@ cd multi_index
 ## This will install the sub-module sdsl library.
 ./install.sh
 
-cd build
-
-## Copy the merged_illumina_31_onlykmers.txt file in to the multi_index/data/ directory
-
-cp SRC_DIR/merged_illumina_31_onlykmers.txt multi_index/data/
-
-cmake ..
-
-
-
---------------------
-Creating Index:      |
---------------------
-
-## Now create a slurm file with the following contents and run it using the sbatch
-## command while in the build directory
-
---------------------------------------------------------------------------------------
-
-#!/bin/sh
-#SBATCH --time=24:00:00
-#SBATCH --mem-per-cpu=128000
-#SBATCH --job-name=kmers-full-data-multi-index-test
-#SBATCH --error=/work/deogun/smaturu/job.%J.err
-#SBATCH --error=/work/deogun/smaturu/job.%J.out
-
-make exp0
-
---------------------------------------------------------------------------------------
-
-## submit the job using sbatch command.
-sbatch test.slurm
-
-## Once the slurm is successfull. Index will be created in the multi_index/data/ folder. 
-## Along with the index, a query results file also can be found which contains
-## the results of the sample query that was derived from the entire hash.
-## This also takes care of the conversion of merged_illumina_31_onlykmers.txt into hash file.
-
---------------------
-Running queries on  |
-the Index:          |
---------------------
-
-## Index is located at multi_index/data/merged_illumina_31_onlykmers.txt.hash.data.4_3.mi_bs
-## To query an index run the following executable stored in the build directory.
+## Run the build.sh script. This will compile all executables required for the
+## experiments.
 
 cd build
-./mi_bs_index_3 ../data/merged_illumina_31_onlykmers.txt.hash.data [query_file_name] 1
-
-## This will create a query_results with a file name [query_file_name]_search_results.txt file 
-## The results can be opened in the notepad.
-
+sh build.sh
 
 --------------------
-Generating a query  |
-hash file:          |
+Run Experiments: |
 --------------------
-## Use following steps to generate a query file.
+## Edit the sample.slurm file. Modify the fasta_query_file and main_kmers_file
+## shell variables to specify your input fasta file and reference_kmers_file
+## Modify --mem-per-cpu=32000 variable in the slurm file to match require memory
+## for the experiments.
+## This will submit a slurm job. Once successful it will create an results file 
+## in the same directory as query_fasta_file exists.
 
-cd build
-./kmers_convertor 0 [input_query_file] [output_hash_file]
-
-## This will generate the output_hash_file file with 64 bit keys. This file can be direct input
-## to the mi_bs_index_3
-
-
-
-
+sbatch sample.slurm
 
 
 
