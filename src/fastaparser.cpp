@@ -75,7 +75,7 @@ void generateKMERS(string inputFileName, string outputFileName,  int kmerSize){
 int main(int argc, char** argv){
         if(argc < 4){
         cout << "Arguments missing: " << endl;
-        cout << "Usage ./fasta-parser [kmerSize] [inputfile] [outputfile] " << e                                                                                                             ndl;
+        cout << "Usage ./fasta-parser [kmerSize] [inputfile] [outputfile] " << endl;                                                                                                           ndl;
         exit(1);
         }
         cout << "Input File: " << argv[2]  << " Output File:" << argv[3]  << " k                                                                                                             merSize: " << stoi(argv[1]) << endl;
