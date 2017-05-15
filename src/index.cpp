@@ -132,7 +132,7 @@ int main(int argc, char* argv[]){
             write_structure<HTML_FORMAT>(pi, idx_file+".html");
             auto index_construction_end_time = timer::now();
             cout<< "Index construction completed." << endl;
-            cout << "# total_time_to_construct_index_in_min :- " << duration_cast<chrono::minutes>(index_construction_end_time-index_construction_begin_time).count() << endl;
+            cout << "# total_time_to_construct_index_in_min :- " << duration_cast<chrono::microseconds>(index_construction_end_time-index_construction_begin_time).count() << endl;
         } else {
             cout << " Index already exists. Using the existing index." << endl;
         }
@@ -247,7 +247,7 @@ int main(int argc, char* argv[]){
                     }
                   auto stop = timer::now();
                   cout << "# time_per_search_query_in_us = " << duration_cast<chrono::microseconds>(stop-start).count()/(double)qry.size() << endl;
-                  cout << "# total_time_for_entire_queries_in_min = " << duration_cast<chrono::minutes>(stop-start).count() << endl;
+                  cout << "# total_time_for_entire_queries_in_us = " << duration_cast<chrono::microseconds>(stop-start).count() << endl;
                   for (size_t i=0; i<qry.size(); ++i){
                       auto result = get<0>(pi.match(qry[i]));
                       result = unique_vec(result);

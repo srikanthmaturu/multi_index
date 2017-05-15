@@ -28,7 +28,6 @@ cd multi_index
 ## This will install the sub-module sdsl library.
 ./install.sh
 
-mkdir build
 cd build
 
 ## Copy the merged_illumina_31_onlykmers.txt file in to the multi_index/data/ directory
