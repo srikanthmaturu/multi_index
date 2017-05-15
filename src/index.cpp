@@ -132,7 +132,7 @@ int main(int argc, char* argv[]){
             write_structure<HTML_FORMAT>(pi, idx_file+".html");
             auto index_construction_end_time = timer::now();
             cout<< "Index construction completed." << endl;
-            cout << "# total_time_to_construct_index_in_min :- " << duration_cast<chrono::microseconds>(index_construction_end_time-index_construction_begin_time).count() << endl;
+            cout << "# total_time_to_construct_index_in_us :- " << duration_cast<chrono::microseconds>(index_construction_end_time-index_construction_begin_time).count() << endl;
         } else {
             cout << " Index already exists. Using the existing index." << endl;
         }
