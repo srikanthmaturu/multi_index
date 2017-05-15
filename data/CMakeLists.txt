@@ -14,7 +14,7 @@ SET(local_test_cases )
 #    endif(NOT EXISTS ${abs_test_case})
 #ENDFOREACH(test_case)
 
-SET(local_kmer_files KMERS_31_ECOLI.txt)
+SET(local_kmer_files )
 
 SET(kmer_hash_files )
 SET(unbuilt_kmer_hash_files )
