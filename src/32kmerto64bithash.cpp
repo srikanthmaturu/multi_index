@@ -37,30 +37,31 @@ uint64_t computeHash(const char* sequence, int length){
 	return hash;
 }
 
-char* reverseHash(uint64_t hash){
-	char* sequence = new char[33];
+char* reverseHash(uint64_t hash, int kmerSize){
+	char* sequence = new char[kmerSize+2];
 	uint64_t temp;
-	for(int i = 0; i < 31; i++){
+
+	for(int i = 0; i < kmerSize; i++){
 		temp = ((3ULL << i * 2) & hash) >> i * 2 ;
 		switch(temp){
 			case 0:
-				sequence[30-i] = 'A';
+				sequence[kmerSize-i-1] = 'A';
 				break;
 			case 1:
-				sequence[30-i] = 'T';
+				sequence[kmerSize-i-1] = 'T';
 				break;
 			case 2:
-				sequence[30-i] = 'G';
+				sequence[kmerSize-i-1] = 'G';
 				break;
 			case 3: 
-				sequence[30-i] = 'C';
+				sequence[kmerSize-i-1] = 'C';
 				break;
 			otherwise:
-				sequence[30-i] = ' ';
+				sequence[kmerSize-i-1] = ' ';
 		}
 	}	
-	sequence[31] = '\n';
-        sequence[32] = '\0';
+	sequence[kmerSize] = '\n';
+        sequence[kmerSize+1] = '\0';
 	return sequence;
 
 }
@@ -109,7 +110,7 @@ uint64_t computeHammingDistance(uint64_t a, uint64_t b){
         return hamming_distance;
 }
 
-void hashConvertor(char* hashfile, char* sequencefile){
+void hashConvertor(char* hashfile, char* sequencefile, int kmerSize){
 	ifstream inputfile(hashfile,ifstream::in | ifstream::binary);
 	ofstream outputfile(sequencefile, ofstream::out);
 
@@ -127,7 +128,7 @@ void hashConvertor(char* hashfile, char* sequencefile){
 		if(hashes.size() == batch_size || inputfile.eof()){
 			#pragma omp parallel for
 			for(int i=0; i<hashes.size(); i++){
-				lines[i] = reverseHash(hashes[i]);
+				lines[i] = reverseHash(hashes[i], kmerSize);
 				//cout << lines[i]; 
 			}
 		for(int i = 0; i < hashes.size(); i++){

@@ -9,7 +9,7 @@
 alias echo="echo -e"
 
 fasta_query_file="../data/test2.fa"
-main_kmers_file="../data/KMERS_31_ECOLI.txt"
+main_kmers_file="../data/KMER_19"
 query_kmers_file=${fasta_query_file}_query_kmers_file
 
 
@@ -22,7 +22,7 @@ then
 	echo "$query_kmers_file exists.\n"	
 else 
 	echo "$query_kmers_file not exists. creating it..."
-	./fastaparser 31 $fasta_query_file $query_kmers_file
+	./fastaparser 19 $fasta_query_file $query_kmers_file
 	echo "$query_kmers_file created.\n"
 fi
 
@@ -44,5 +44,5 @@ else
 	echo "${query_kmers_file}.hash created.\n"
 fi
 
-./mi_bs_index_10 ${main_kmers_file}.hash  ${query_kmers_file}.hash 1
+./mi_bs_index_5 ${main_kmers_file}.hash  ${query_kmers_file}.hash 1
 
