@@ -262,12 +262,13 @@ int main(int argc, char* argv[]){
                             uint64_t hamming_distance = computeHammingDistance(qry[i], result[j], kmer_size);
                             if(hamming_distance > t_k/2) continue; 
                             query_results_vector[i].second = hamming_distance;
+                            cout << "here "<< query_results_vector[i].second << " \n" ;
                             string original_query_result = reverseHash(result[j], kmer_size);
                             original_query_result.pop_back();
                             query_results_vector[i].first.push_back(original_query_result);
                         }
                     }
-                    cout << "Storing results in the results file. " << endl;
+                    cout << "s results in the results file. " << endl;
                     for (size_t i=0; i<qry.size(); ++i){
                         query_results << "\n\n"<< i<< ": \t" << queries[i].c_str() << endl;
                         query_results << "\nApproximate Sequences:\n";
