@@ -103,11 +103,12 @@ int main(int argc, char* argv[]){
     }
 
     if ( argc < 2 ) {
-        cout << "Usage: ./" << argv[0] << " hash_file [query_file] [search_only] [check_mode] [print_header_for_search_only] [parallel_construction]" << endl;
+        cout << "Usage: ./" << argv[0] << " hash_file [query_file] [search_only] [check_mode] [print_header_for_search_only] [parallel_construction] [kmer_size]" << endl;
         cout << " search_only: 0=No (default); 1=Yes" << endl;
         cout << " check_mode: 0=No (default); 1=Yes" << endl;
         cout << " print_header_for_search_only: 0=No (default); 1=Yes" << endl;
         cout << " parallel construction: 0=No (default); 1=Yes" << endl;
+        cout << " Kmer size: n" << endl;
         return 1;
     }
 
@@ -145,6 +146,7 @@ int main(int argc, char* argv[]){
         size_t check_mode = 0;
         bool print_info = false;
         bool async = false;
+        uint64_t kmer_size = 31;
         
         if ( argc >= 3 ) {
             qry_file = argv[2];
@@ -152,6 +154,7 @@ int main(int argc, char* argv[]){
             if ( argc > 4 ) { check_mode  = stoull(argv[4]); }
             if ( argc > 5 ) { print_info  = stoull(argv[5]); }
             if ( argc > 6 ) { async       = stoull(argv[6]); }
+            if ( argc > 7 ) { kmer_size   = stoull(argv[7]); }
         } else {
             stringstream linestream(line); 
             linestream >> qry_file;
@@ -256,7 +259,7 @@ int main(int argc, char* argv[]){
                       query_results << "\nApproximate Sequences:\n";
                       
                       for (size_t j=0; j<result.size(); ++j){
-                          string original_query_result = reverseHash(result[j]);
+                          string original_query_result = reverseHash(result[j], kmer_size);
                           original_query_result.pop_back();
                           query_results << "\t\t" << original_query_result.c_str() << "  " << computeHammingDistance(qry[i], result[j]) << endl;
                       }
