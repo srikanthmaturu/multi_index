@@ -251,29 +251,29 @@ int main(int argc, char* argv[]){
                     auto stop = timer::now();
                     cout << "# time_per_search_query_in_us = " << duration_cast<chrono::microseconds>(stop-start).count()/(double)qry.size() << endl;
                     cout << "# total_time_for_entire_queries_in_us = " << duration_cast<chrono::microseconds>(stop-start).count() << endl;
-                    vector< pair<vector<string>, uint64_t >> query_results_vector(qry.size());
+                    vector< vector< pair<string,uint64_t> > > query_results_vector(qry.size());
                     vector< string > queries(qry.size());
                     #pragma omp parallel for
                     for (size_t i=0; i<qry.size(); ++i){
                         auto result = get<0>(pi.match(qry[i]));
                         result = unique_vec(result);
                         queries[i] = reverseHash(qry[i], kmer_size);
-                        for (size_t j=0; i<result.size(); ++j){
+                        for (size_t j=0; j<result.size(); ++j){
                             uint64_t hamming_distance = computeHammingDistance(qry[i], result[j], kmer_size);
-                            if(hamming_distance > t_k/2) continue; 
-                            query_results_vector[i].second = hamming_distance;
-                            cout << "here "<< query_results_vector[i].second << " \n" ;
+                            if(hamming_distance > t_k/2) continue;
                             string original_query_result = reverseHash(result[j], kmer_size);
                             original_query_result.pop_back();
-                            query_results_vector[i].first.push_back(original_query_result);
-                        }
+			    query_results_vector[i].push_back(make_pair(original_query_result, hamming_distance));
+                       	   // cout << i << " " << j << " "<< result.size() << " " << query_results_vector.size() << " "<< query_results_vector[i].size() << endl;
+			}
+			
                     }
-                    cout << "s results in the results file. " << endl;
+                    cout << "saving results in the results file. " << endl;
                     for (size_t i=0; i<qry.size(); ++i){
                         query_results << "\n\n"<< i<< ": \t" << queries[i].c_str() << endl;
                         query_results << "\nApproximate Sequences:\n";
-                        for (size_t j=0; j<query_results_vector[i].first.size(); ++j){
-                          query_results << "\t\t" << query_results_vector[i].first[j].c_str() << "  " << query_results_vector[i].second << endl;
+                        for (size_t j=0; j<query_results_vector[i].size(); ++j){
+                          query_results << "\t\t" << query_results_vector[i][j].first.c_str() << "  " << query_results_vector[i][j].second << endl;
                       }
                   }
               }
