@@ -5,19 +5,21 @@
  */
 
 #include "32kmerto64bithash.cpp"
-
+#include <cstdint>
 int main(int argc, char** argv){
 	if(argc < 4){
 		cout << " Input both input and output files: " << endl;
 		cout << "Usage:" << argv[0] << "conversion_type file1 file2" << endl;
 		cout << "conversion_type = 0: 	file1 is input_sequence_file, file2 is  output_hash_file " <<endl;
 		cout << "converstion_type = 1: file1 is input_hash_file, file2 is output_sequence_file " << endl; 
+                cout << "kmer_size (only for conversion type = 1)" << endl;
 		exit(1);
 	}
 	cout << "Conversion started...." << endl;
 	if(stoi(argv[1]) ==  0){	
 		sequenceConvertor(argv[2], argv[3]); }
 	else {
-		hashConvertor(argv[2], argv[3]); 
+            uint64_t kmer_size = stoull(argv[4]);
+		hashConvertor(argv[2], argv[3], kmer_size); 
 	}
 }
