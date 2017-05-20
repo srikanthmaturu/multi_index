@@ -244,26 +244,35 @@ int main(int argc, char* argv[]){
                 ofstream query_results(query_search_results_file);
                 check_cnt = 0;
                 {
-                  auto start = timer::now();
-                  for (size_t i=0; i<qry.size(); ++i){
-                      check_cnt += get<1>(pi.match(qry[i], true));
+                    auto start = timer::now();
+                    for (size_t i=0; i<qry.size(); ++i){
+                        check_cnt += get<1>(pi.match(qry[i], true));
                     }
-                  auto stop = timer::now();
-                  cout << "# time_per_search_query_in_us = " << duration_cast<chrono::microseconds>(stop-start).count()/(double)qry.size() << endl;
-                  cout << "# total_time_for_entire_queries_in_us = " << duration_cast<chrono::microseconds>(stop-start).count() << endl;
-                  for (size_t i=0; i<qry.size(); ++i){
-                      auto result = get<0>(pi.match(qry[i]));
-                      result = unique_vec(result);
-                      string original_query = reverseHash(qry[i], kmer_size);
-                      query_results << "\n\n"<< i<< ": \t" << original_query.c_str() << endl;
-                      query_results << "\nApproximate Sequences:\n";
-                      
-                      for (size_t j=0; j<result.size(); ++j){
-			uint64_t hamming_distance = computeHammingDistance(qry[i], result[j], kmer_size);
-			if(hamming_distance > t_k/2) continue; 
-			string original_query_result = reverseHash(result[j], kmer_size);
-                          original_query_result.pop_back();
-                          query_results << "\t\t" << original_query_result.c_str() << "  " << hamming_distance << endl;
+                    auto stop = timer::now();
+                    cout << "# time_per_search_query_in_us = " << duration_cast<chrono::microseconds>(stop-start).count()/(double)qry.size() << endl;
+                    cout << "# total_time_for_entire_queries_in_us = " << duration_cast<chrono::microseconds>(stop-start).count() << endl;
+                    vector< pair<vector<string>, uint64_t >> query_results_vector(qry.size());
+                    vector< string > queries(qry.size());
+                    #pragma omp parallel for
+                    for (size_t i=0; i<qry.size(); ++i){
+                        auto result = get<0>(pi.match(qry[i]));
+                        result = unique_vec(result);
+                        queries[i] = reverseHash(qry[i], kmer_size);
+                        for (size_t j=0; i<result.size(); ++j){
+                            uint64_t hamming_distance = computeHammingDistance(qry[i], result[j], kmer_size);
+                            if(hamming_distance > t_k/2) continue; 
+                            query_results_vector[i].second = hamming_distance;
+                            string original_query_result = reverseHash(result[j], kmer_size);
+                            original_query_result.pop_back();
+                            query_results_vector[i].first.push_back(original_query_result);
+                        }
+                    }
+                    cout << "Storing results in the results file. " << endl;
+                    for (size_t i=0; i<qry.size(); ++i){
+                        query_results << "\n\n"<< i<< ": \t" << queries[i].c_str() << endl;
+                        query_results << "\nApproximate Sequences:\n";
+                        for (size_t j=0; j<query_results_vector[i].first.size(); ++j){
+                          query_results << "\t\t" << query_results_vector[i].first[j].c_str() << "  " << query_results_vector[i].second << endl;
                       }
                   }
               }
