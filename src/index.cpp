@@ -254,7 +254,7 @@ int main(int argc, char* argv[]){
                   for (size_t i=0; i<qry.size(); ++i){
                       auto result = get<0>(pi.match(qry[i]));
                       result = unique_vec(result);
-                      string original_query = reverseHash(qry[i]);
+                      string original_query = reverseHash(qry[i], kmer_size);
                       query_results << "\n\n"<< i<< ": \t" << original_query.c_str() << endl;
                       query_results << "\nApproximate Sequences:\n";
                       
