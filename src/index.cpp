@@ -259,9 +259,11 @@ int main(int argc, char* argv[]){
                       query_results << "\nApproximate Sequences:\n";
                       
                       for (size_t j=0; j<result.size(); ++j){
-                          string original_query_result = reverseHash(result[j], kmer_size);
+			uint64_t hamming_distance = computeHammingDistance(qry[i], result[j], kmer_size);
+			if(hamming_distance > t_k/2) continue; 
+			string original_query_result = reverseHash(result[j], kmer_size);
                           original_query_result.pop_back();
-                          query_results << "\t\t" << original_query_result.c_str() << "  " << computeHammingDistance(qry[i], result[j]) << endl;
+                          query_results << "\t\t" << original_query_result.c_str() << "  " << hamming_distance << endl;
                       }
                   }
               }

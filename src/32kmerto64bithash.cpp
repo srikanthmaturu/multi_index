@@ -99,9 +99,9 @@ void sequenceConvertor(char* sequencefile, char* hashfile){
 	}	
 }
 
-uint64_t computeHammingDistance(uint64_t a, uint64_t b){
+uint64_t computeHammingDistance(uint64_t a, uint64_t b, uint64_t kmer_size){
         uint64_t res = a ^ b, hamming_distance = 0ULL;
-        for(int i = 0; i < 31; i++){
+        for(int i = 0; i < kmer_size; i++){
 		uint64_t temp = ((3ULL << i * 2) & res) >> i * 2 ;
 		if(temp > 0){
                     hamming_distance += 1;
