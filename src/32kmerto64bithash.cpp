@@ -6,10 +6,12 @@
 #include <fstream>
 #include <iterator>
 #include <omp.h>
+#include "sdsl/bits.hpp"
+
 using namespace std;
 
 uint64_t computeHash(const char* sequence, int length){
-	uint64_t hash = 0ULL, temp;
+	uint64_t hash = 0ULL, temp = 0ULL;
 	for(int i=0; i<length; i++){
 		int pos = length - i - 1;
 		switch(sequence[i]){
@@ -73,7 +75,7 @@ void sequenceConvertor(char* sequencefile, char* hashfile){
 	
 	vector<string> lines;
 	vector<uint64_t> hashes;
-	int batch_size = 1000000;
+	uint64_t batch_size = 1000000;
 
 	hashes.reserve(batch_size);
 	char * input_char_sequence = new char[1024];
@@ -85,11 +87,11 @@ void sequenceConvertor(char* sequencefile, char* hashfile){
 				lines.pop_back();
 			}
 			#pragma omp parallel for
-			for(int i=0; i<lines.size(); i++){
+			for(uint8_t i=0; i<lines.size(); i++){
 				hashes[i] = computeHash(lines[i].c_str(), lines[i].size());
 				//cout << hashes[i] << endl;
 			}
-		for(int i = 0; i < lines.size(); i++){
+		for(uint8_t i = 0; i < lines.size(); i++){
 			outputfile.write((char*)&hashes[i], 8);
 		}
 		//ostream_iterator<uint64_t> output_iterator(outputfile, "");
@@ -100,14 +102,10 @@ void sequenceConvertor(char* sequencefile, char* hashfile){
 }
 
 uint64_t computeHammingDistance(uint64_t a, uint64_t b, uint64_t kmer_size){
-        uint64_t res = a ^ b, hamming_distance = 0ULL;
-        for(int i = 0; i < kmer_size; i++){
-		uint64_t temp = ((3ULL << i * 2) & res) >> i * 2 ;
-		if(temp > 0){
-                    hamming_distance += 1;
-                }
-	}
-        return hamming_distance;
+        uint64_t t = a & b;
+	t &= (t << 1ULL);
+	t &= 0xAAAAAAAAAAAAAAAAULL;
+	return sdsl::bits::cnt(t);
 }
 
 void hashConvertor(char* hashfile, char* sequencefile, int kmerSize){

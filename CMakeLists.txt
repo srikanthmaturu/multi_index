@@ -46,6 +46,8 @@ TARGET_LINK_LIBRARIES(bench_scan3 sdsl multi_idx)
 #ADD_EXECUTABLE(cluster_statistics src/cluster_statistics.cpp)
 #TARGET_LINK_LIBRARIES(cluster_statistics sdsl multi_idx)
 ADD_EXECUTABLE(kmers_convertor src/kmers_convertor.cpp)
+TARGET_LINK_LIBRARIES(kmers_convertor sdsl)
+
 ADD_EXECUTABLE(fastaparser src/fastaparser.cpp)
 ADD_SUBDIRECTORY(data)
 

@@ -6,7 +6,7 @@
 #include <vector>
 #include <sstream>
 #include "32kmerto64bithash.cpp"
-
+#include <omp.h>
 using namespace std;
 using namespace sdsl;
 using namespace multi_index;
@@ -253,21 +253,24 @@ int main(int argc, char* argv[]){
                     cout << "# total_time_for_entire_queries_in_us = " << duration_cast<chrono::microseconds>(stop-start).count() << endl;
                     vector< vector< pair<string,uint64_t> > > query_results_vector(qry.size());
                     vector< string > queries(qry.size());
-                    #pragma omp parallel for
+                    
+		    {
+		    #pragma omp parallel for
                     for (size_t i=0; i<qry.size(); ++i){
                         auto result = get<0>(pi.match(qry[i]));
                         result = unique_vec(result);
                         queries[i] = reverseHash(qry[i], kmer_size);
+			cout << " processing query " << i << endl;
+			//query_results_vector.reserve(result.size());
                         for (size_t j=0; j<result.size(); ++j){
                             uint64_t hamming_distance = computeHammingDistance(qry[i], result[j], kmer_size);
                             if(hamming_distance > t_k/2) continue;
                             string original_query_result = reverseHash(result[j], kmer_size);
                             original_query_result.pop_back();
 			    query_results_vector[i].push_back(make_pair(original_query_result, hamming_distance));
-                       	   // cout << i << " " << j << " "<< result.size() << " " << query_results_vector.size() << " "<< query_results_vector[i].size() << endl;
 			}
-			
                     }
+		    }
                     cout << "saving results in the results file. " << endl;
                     for (size_t i=0; i<qry.size(); ++i){
                         query_results << "\n\n"<< i<< ": \t" << queries[i].c_str() << endl;
