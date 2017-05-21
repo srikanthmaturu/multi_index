@@ -102,7 +102,8 @@ void sequenceConvertor(char* sequencefile, char* hashfile){
 }
 
 uint64_t computeHammingDistance(uint64_t a, uint64_t b, uint64_t kmer_size){
-        uint64_t t = a & b;
+	uint64_t bs = (0xFFFFFFFFFFFFFFFF) >> (64 - kmer_size);
+        uint64_t t = (~(a ^ b)) & (bs);
 	t &= (t << 1ULL);
 	t &= 0xAAAAAAAAAAAAAAAAULL;
 	return sdsl::bits::cnt(t);
