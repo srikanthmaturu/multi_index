@@ -251,13 +251,12 @@ int main(int argc, char* argv[]){
                     auto stop = timer::now();
                     cout << "# time_per_search_query_in_us = " << duration_cast<chrono::microseconds>(stop-start).count()/(double)qry.size() << endl;
                     cout << "# total_time_for_entire_queries_in_us = " << duration_cast<chrono::microseconds>(stop-start).count() << endl;
-                    vector< vector< pair<string,uint64_t> > > query_results_vector(qry.size());
-                    vector< string > queries(qry.size());
                     uint64_t marker = 0xFFFFFFFFFFFFFFFFULL;
 		    for (size_t i=0; i<qry.size(); ++i){
 			auto result = get<0>(pi.match(qry[i]));
 			result = unique_vec(result);
 			query_results.write((char *)&marker, 8);
+                        query_results.write((char *)&qry[i], 8);
 			for (size_t j=0; j<result.size(); ++j){
 				query_results.write((char *)&result[j], 8);
 			}
