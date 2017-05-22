@@ -240,7 +240,7 @@ int main(int argc, char* argv[]){
                 cout << "# candidates_per_query = " << ((double)check_cnt)/qry.size() << endl;
                 cout << "# check_cnt_search = " << check_cnt << endl;
             } else {
-                string query_search_results_file = qry_file + "_search_results.txt";
+                string query_search_results_file = qry_file + "_search_results";
                 ofstream query_results(query_search_results_file);
                 check_cnt = 0;
                 {
@@ -257,13 +257,13 @@ int main(int argc, char* argv[]){
 			result = unique_vec(result);
 			query_results.write((char *)&marker, 8);
                         query_results.write((char *)&qry[i], 8);
-			for (size_t j=0; j<result.size(); ++j){
-				query_results.write((char *)&result[j], 8);
-			}
+			serialize(result, query_results);
+			//query_results.write((char *)result.data(),result.size()*8); 
 			}
               query_results.close();
             }
         }
+	}
         else
         {
              auto keys = load_keys(hash_file);

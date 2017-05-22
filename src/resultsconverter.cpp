@@ -3,36 +3,46 @@
 #include <fstream>
 #include "32kmerto64bithash.cpp"
 #include <omp.h>
+#include <vector>
+
+using namespace std;
 
 void translateResultsFile(string input_results_file, string output_results_file, uint64_t kmer_size, uint64_t t_k){
-    ifstream inputfile(input_results_file, ifstream::in);
-    ofstream outputfile(output_results_file, ofstream::out | ofstream::binary));
+    ifstream inputfile(input_results_file, ifstream::in | ifstream::binary);
+    ofstream outputfile(output_results_file, ofstream::out);
     
-    vecotr<uint64_t> * hashes;
+    vector<uint64_t> * hashes;
     uint64_t query, result;
-    vector< vector< pair<string,uint64_t> > > query_results_vector(qry.size());
-    vector< vector<uint64_t>* > m_vector(); 
-    vector< uint64_t > queries(qry.size());
+    
+    vector< vector<uint64_t>* > m_vector; 
+    vector< uint64_t > queries;
+	
     while(!inputfile.eof()){
-        uint64_t t, marker = 0xFFFFFFFFFFFFFFFFULL;
-        inputfile.read((char*)&t, 8);
-        if(t & marker == 0){
-            if(!hashes->isEmpty()) {
+        uint64_t t = 0ULL, marker = 0xFFFFFFFFFFFFFFFFULL;
+	inputfile.read((char*)&t, 8);
+       	cout << " h " << endl;
+	//cout << t << " l";
+	cout << " s" << endl;
+	cout << t ;
+	if(t & marker == 0){
+            if(!hashes->empty()) {
                 m_vector.push_back(hashes);
-            }
+           cout << "here " << endl;
+		 }
             hashes = new vector<uint64_t>();
             inputfile.read((char*)&query, 8);
             queries.push_back(query);
         }
         else {
             inputfile.read((char*)&result, 8);
-            hashes.push_back(result);
+            hashes->push_back(result);
         }
     }
     
+    vector< vector< pair<string,uint64_t> > > query_results_vector(queries.size());
     #pragma omp parallel for
     for (size_t i=0; i<m_vector.size(); ++i){
-        auto result = m_vector[i];
+        auto result = *m_vector[i];
         cout << " processing query " << i << endl;
 	for (size_t j=0; j<result.size(); ++j){
             uint64_t hamming_distance = computeHammingDistance(queries[i], result[j], kmer_size);
@@ -44,11 +54,11 @@ void translateResultsFile(string input_results_file, string output_results_file,
     }
     
     cout << "saving results in the results file. " << endl;
-    for (size_t i=0; i<qry.size(); ++i){
-        query_results << "\n\n"<< i<< ": \t" << queries[i].c_str() << endl;
-        query_results << "\nApproximate Sequences:\n";
+    for (size_t i=0; i<queries.size(); ++i){
+        outputfile << "\n\n"<< i<< ": \t" << reverseHash(queries[i], kmer_size) << endl;
+        outputfile << "\nApproximate Sequences:\n";
         for (size_t j=0; j<query_results_vector[i].size(); ++j){
-            query_results << "\t\t" << query_results_vector[i][j].first.c_str() << "  " << query_results_vector[i][j].second << endl;
+            outputfile << "\t\t" << query_results_vector[i][j].first.c_str() << "  " << query_results_vector[i][j].second << endl;
        }
     }
 }                     
