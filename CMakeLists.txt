@@ -50,6 +50,9 @@ TARGET_LINK_LIBRARIES(kmers_convertor sdsl)
 
 ADD_EXECUTABLE(results_converter src/resultsconverter.cpp)
 
+ADD_EXECUTABLE(testcode src/test.cpp)
+TARGET_LINK_LIBRARIES(testcode sdsl)
+
 ADD_EXECUTABLE(fastaparser src/fastaparser.cpp)
 ADD_SUBDIRECTORY(data)
 

@@ -258,8 +258,8 @@ int main(int argc, char* argv[]){
                             string original_query_result = reverseHash(result[j], kmer_size);
                             original_query_result.pop_back();
 			    query_results_vector[i].push_back(make_pair(original_query_result, hamming_distance));
-                       	    cout << i << endl;
 			}
+			cout << " processing " << i + 1 << endl;
                     }
                     auto stop = timer::now();
                     cout << "# time_per_search_query_in_us = " << duration_cast<chrono::microseconds>(stop-start).count()/(double)qry.size() << endl;
