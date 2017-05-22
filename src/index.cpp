@@ -240,39 +240,40 @@ int main(int argc, char* argv[]){
                 cout << "# candidates_per_query = " << ((double)check_cnt)/qry.size() << endl;
                 cout << "# check_cnt_search = " << check_cnt << endl;
             } else {
-                string query_search_results_file = qry_file + "_search_results";
+                string query_search_results_file = qry_file + "_search_results.txt";
                 ofstream query_results(query_search_results_file);
                 check_cnt = 0;
                 {
-		    vector<uint64_t> results_vector;
-                    uint64_t marker = 0xFFFFFFFFFFFFFFFFULL;
-		    auto start = timer::now();
+                    auto start = timer::now();
+                    vector< vector< pair<string,uint64_t> > > query_results_vector(qry.size());
+                    vector< string > queries(qry.size());
+                    #pragma omp parallel for
                     for (size_t i=0; i<qry.size(); ++i){
-                        auto p = pi.match(qry[i]);
-			check_cnt += get<1>(p);
-                    	auto result = unique_vec(get<0>(p));
-			cout << " i = " << i << endl;	
-			query_results.write((char *)&marker, 8);
-                        query_results.write((char *)&qry[i], 8);
-			query_results.write((char *)result.data(),result.size()*8);
+                        auto result = get<0>(pi.match(qry[i]));
+                        result = unique_vec(result);
+                        queries[i] = reverseHash(qry[i], kmer_size);
+                        for (size_t j=0; j<result.size(); ++j){
+                            uint64_t hamming_distance = computeHammingDistance(qry[i], result[j], kmer_size);
+                            if(hamming_distance > t_k/2) continue;
+                            string original_query_result = reverseHash(result[j], kmer_size);
+                            original_query_result.pop_back();
+			    query_results_vector[i].push_back(make_pair(original_query_result, hamming_distance));
+                       	    cout << i << endl;
 			}
+                    }
                     auto stop = timer::now();
                     cout << "# time_per_search_query_in_us = " << duration_cast<chrono::microseconds>(stop-start).count()/(double)qry.size() << endl;
-                    cout << "# total_time_for_entire_queries_in_us = " << duration_cast<chrono::microseconds>(stop-start).count() << endl;	
-			//results_vector.push_back(marker);
-			//results_vector.push_back(qry[i]);
-			//query_results.write((char *)&marker, 8);
-                        //query_results.write((char *)&qry[i], 8);
-			//serialize(result, query_results);
-			//cout << " i = " << i << endl;
-			//query_results.write((char *)result.data(),result.size()*8); 
-			//results_vector.insert(results_vector.end(), result.begin(), result.end());
-			//for (auto it = result.begin(); it != result.end(); ++it) {
-            		//	results_vector.push_back(*it);
-        		//}
-		    query_results.write((char*)results_vector.data(), results_vector.size()*8);
-              query_results.close();
-            }
+                    cout << "# total_time_for_entire_queries_in_us = " << duration_cast<chrono::microseconds>(stop-start).count() << endl;
+                    cout << "saving results in the results file. " << endl;
+                    for (size_t i=0; i<qry.size(); ++i){
+                        query_results << "\n\n"<< i<< ": \t" << queries[i].c_str() << endl;
+                        query_results << "\nApproximate Sequences:\n";
+                        for (size_t j=0; j<query_results_vector[i].size(); ++j){
+                          query_results << "\t\t" << query_results_vector[i][j].first.c_str() << "  " << query_results_vector[i][j].second << endl;
+                      }
+                    }
+                    query_results.close();   
+                }
         }
 	}
         else
