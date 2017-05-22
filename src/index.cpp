@@ -244,22 +244,33 @@ int main(int argc, char* argv[]){
                 ofstream query_results(query_search_results_file);
                 check_cnt = 0;
                 {
-                    auto start = timer::now();
-                    for (size_t i=0; i<qry.size(); ++i){
-                        check_cnt += get<1>(pi.match(qry[i], true));
-                    }
-                    auto stop = timer::now();
-                    cout << "# time_per_search_query_in_us = " << duration_cast<chrono::microseconds>(stop-start).count()/(double)qry.size() << endl;
-                    cout << "# total_time_for_entire_queries_in_us = " << duration_cast<chrono::microseconds>(stop-start).count() << endl;
+		    vector<uint64_t> results_vector;
                     uint64_t marker = 0xFFFFFFFFFFFFFFFFULL;
-		    for (size_t i=0; i<qry.size(); ++i){
-			auto result = get<0>(pi.match(qry[i]));
-			result = unique_vec(result);
+		    auto start = timer::now();
+                    for (size_t i=0; i<qry.size(); ++i){
+                        auto p = pi.match(qry[i]);
+			check_cnt += get<1>(p);
+                    	auto result = unique_vec(get<0>(p));
+			cout << " i = " << i << endl;	
 			query_results.write((char *)&marker, 8);
                         query_results.write((char *)&qry[i], 8);
-			serialize(result, query_results);
-			//query_results.write((char *)result.data(),result.size()*8); 
+			query_results.write((char *)result.data(),result.size()*8);
 			}
+                    auto stop = timer::now();
+                    cout << "# time_per_search_query_in_us = " << duration_cast<chrono::microseconds>(stop-start).count()/(double)qry.size() << endl;
+                    cout << "# total_time_for_entire_queries_in_us = " << duration_cast<chrono::microseconds>(stop-start).count() << endl;	
+			//results_vector.push_back(marker);
+			//results_vector.push_back(qry[i]);
+			//query_results.write((char *)&marker, 8);
+                        //query_results.write((char *)&qry[i], 8);
+			//serialize(result, query_results);
+			//cout << " i = " << i << endl;
+			//query_results.write((char *)result.data(),result.size()*8); 
+			//results_vector.insert(results_vector.end(), result.begin(), result.end());
+			//for (auto it = result.begin(); it != result.end(); ++it) {
+            		//	results_vector.push_back(*it);
+        		//}
+		    query_results.write((char*)results_vector.data(), results_vector.size()*8);
               query_results.close();
             }
         }
