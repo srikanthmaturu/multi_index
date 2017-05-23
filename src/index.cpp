@@ -253,11 +253,17 @@ int main(int argc, char* argv[]){
                         result = unique_vec(result);
                         queries[i] = reverseHash(qry[i], kmer_size);
                         for (size_t j=0; j<result.size(); ++j){
-                            uint64_t hamming_distance = computeHammingDistance(qry[i], result[j], kmer_size);
-                            if(hamming_distance > t_k/2) continue;
+                            uint64_t hamming_distance = hd_spec(qry[i], result[j]);
                             string original_query_result = reverseHash(result[j], kmer_size);
                             original_query_result.pop_back();
 			    query_results_vector[i].push_back(make_pair(original_query_result, hamming_distance));
+                            
+                            template<class T>
+                            bool comp(T a, T b){
+                                return a.second < b.second;
+                            }
+                            
+                            sort(results_Vector[i].begin(), results_vector[i].end(), comp<pair<string,uint64_t>> );
 			}
 			cout << " processing " << i + 1 << endl;
                     }
