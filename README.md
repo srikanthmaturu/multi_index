@@ -28,6 +28,8 @@ cd multi_index
 ## experiments.
 
 cd build
+cmake ..
+cmake ..
 sh build.sh
 
 --------------------
