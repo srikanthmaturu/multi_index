@@ -20,11 +20,11 @@ vector<string>& getKMERS(string sequence, int kmerSize){
         return *kmers;
 }
 
-void generateKMERS(string inputFileName, string outputFileName,  int kmerSize){
+void generateKMERS(string inputFileName, string outputFileName,  uint8_t kmerSize){
 	ifstream dataFile(inputFileName.c_str(), ifstream::in);
 	ofstream outputFile(outputFileName.c_str(), ofstream::out);
 
-	int batch_size = 1000000;
+	uint64_t batch_size = 1000000;
 	vector<string> lines, kmers;
 	
 	cout << "Generating KMERS..." << endl; 	
@@ -45,7 +45,7 @@ void generateKMERS(string inputFileName, string outputFileName,  int kmerSize){
 		}
 			
 		if(lines.size() == batch_size || dataFile.fail() || dataFile.eof()){	
-			for(int i=0; i<lines.size(); i++){
+			for(uint64_t i=0; i<lines.size(); i++){
 				vector<string> temp = getKMERS(lines[i], kmerSize);
 				kmers.insert(kmers.end(), temp.begin(), temp.end()); 
 			}

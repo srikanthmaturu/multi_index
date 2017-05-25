@@ -1,3 +1,5 @@
+#pragma once
+
 #include <iostream>
 #include <vector>
 #include <cstdint>
@@ -31,7 +33,7 @@ uint64_t computeHash(const char* sequence, int length){
 		case 'C':
 			temp = 3ULL << (pos)*2;
 			break;
-		otherwise:
+		default:
 			temp = 0ULL;
 		}
 		hash = hash | temp;
@@ -58,7 +60,7 @@ char* reverseHash(uint64_t hash, int kmerSize){
 			case 3: 
 				sequence[kmerSize-i-1] = 'C';
 				break;
-			otherwise:
+			default:
 				sequence[kmerSize-i-1] = ' ';
 		}
 	}	
@@ -87,22 +89,24 @@ void sequenceConvertor(char* sequencefile, char* hashfile){
 				lines.pop_back();
 			}
 			#pragma omp parallel for
-			for(uint8_t i=0; i<lines.size(); i++){
+			for(uint64_t i=0; i<lines.size(); i++){
 				hashes[i] = computeHash(lines[i].c_str(), lines[i].size());
 				//cout << hashes[i] << endl;
 			}
-		for(uint8_t i = 0; i < lines.size(); i++){
+		//cout << " here " << endl;
+		for(uint64_t i = 0; i < lines.size(); i++){
 			outputfile.write((char*)&hashes[i], 8);
 		}
 		//ostream_iterator<uint64_t> output_iterator(outputfile, "");
 		//copy(hashes.begin(), hashes.begin() + lines.size(), output_iterator);
 		lines.clear();			
 		}
+		//cout << " out " << endl;
 	}	
 }
 
 uint64_t hd_spec(uint64_t a, uint64_t b){
-        t = (a ^ b);
+        uint64_t t = (a ^ b);
         t |= t<<1;
         t &= 0xAAAAAAAAAAAAAAAAULL;
         return sdsl::bits::cnt(t);
@@ -114,7 +118,7 @@ void hashConvertor(char* hashfile, char* sequencefile, int kmerSize){
 
 	vector<uint64_t> hashes;
 	vector<string> lines;
-	int batch_size = 1000000;
+	uint64_t batch_size = 1000000;
 	lines.reserve(batch_size);
 	
 	while(!inputfile.eof()){
@@ -125,11 +129,11 @@ void hashConvertor(char* hashfile, char* sequencefile, int kmerSize){
 		}
 		if(hashes.size() == batch_size || inputfile.eof()){
 			#pragma omp parallel for
-			for(int i=0; i<hashes.size(); i++){
+			for(uint64_t i=0; i<hashes.size(); i++){
 				lines[i] = reverseHash(hashes[i], kmerSize);
 				//cout << lines[i]; 
 			}
-		for(int i = 0; i < hashes.size(); i++){
+		for(uint64_t i = 0; i < hashes.size(); i++){
 			outputfile.write(lines[i].c_str(), lines[i].size());
 		}
 		hashes.clear();		

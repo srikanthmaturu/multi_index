@@ -9,7 +9,7 @@
 #include "sdsl/sd_vector.hpp"
 #include "sdsl/bit_vectors.hpp"
 #include "multi_idx/multi_idx_helper.hpp"
-#include "src/32kmerto64bithash.cpp"
+#include "32kmerto64bithash.cpp"
 
 namespace multi_index {
  
@@ -66,7 +66,7 @@ namespace multi_index {
             
             if(find_only_candidates) return {res, candidates};
             for (auto it = begin; it != end; ++it) {
-               if (hd_spec(q, *it) <= errors)
+               if (hd_spec(q, *it) <= errors/2)
                  res.push_back(*it);
             }
             return {res, candidates};

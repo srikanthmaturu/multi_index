@@ -19,7 +19,8 @@ LINK_DIRECTORIES(${CMAKE_BINARY_DIR}/external/sdsl-lite/lib)
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/include
                     ${CMAKE_BINARY_DIR}/external/sdsl-lite/include
                     ${CMAKE_BINARY_DIR}/external/sdsl-lite/external/libdivsufsort-2.0.1/include
-                    )
+                    ${CMAKE_HOME_DIRECTORY}/src
+		   )
 
 find_package(Git)
 if(GIT_FOUND)
@@ -49,9 +50,6 @@ ADD_EXECUTABLE(kmers_convertor src/kmers_convertor.cpp)
 TARGET_LINK_LIBRARIES(kmers_convertor sdsl)
 
 ADD_EXECUTABLE(results_converter src/resultsconverter.cpp)
-
-ADD_EXECUTABLE(testcode src/test.cpp)
-TARGET_LINK_LIBRARIES(testcode sdsl)
 
 ADD_EXECUTABLE(fastaparser src/fastaparser.cpp)
 ADD_SUBDIRECTORY(data)
@@ -127,7 +125,8 @@ FOREACH(line ${exp0_lines})
         STRING(REGEX REPLACE "([,<])t_k([,>])" "\\1${t_k}\\2" type ${index_type}) 
         GEN_PERM_FILE(${type} blocks)
         SET(exec ${index_name}_index_${t_k})
-        IF(NOT TARGET ${exec})
+        MESSAGE("Target: ${exec} ")
+	IF(NOT TARGET ${exec})
             ADD_EXECUTABLE(${exec} src/index.cpp)
             TARGET_LINK_LIBRARIES(${exec} sdsl -ggdb divsufsort divsufsort64 multi_idx pthread)
             SET_PROPERTY(TARGET ${exec} PROPERTY COMPILE_DEFINITIONS 

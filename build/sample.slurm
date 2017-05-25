@@ -1,5 +1,7 @@
 #!/bin/sh
 #SBATCH --time=24:00:00
+#SBATCH --ntasks-per-node=16
+#SBATCH --nodes=1
 #SBATCH --mem-per-cpu=32000
 #SBATCH --sockets-per-node=1
 #SBATCH --cores-per-socket=1
@@ -47,5 +49,5 @@ else
 	echo "${query_kmers_file}.hash created.\n"
 fi
 
-./mi_bs_index_6 ${main_kmers_file}.hash  ${query_kmers_file}.hash 1 0 0 0 19
+./mi_bv_red_index_8 ${main_kmers_file}.hash  ${query_kmers_file}.hash 1 0 0 0 19
 

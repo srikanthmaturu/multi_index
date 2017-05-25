@@ -8,7 +8,7 @@
 #include "sdsl/int_vector.hpp"
 #include "sdsl/sd_vector.hpp"
 #include "sdsl/bit_vectors.hpp"
-#include "src/32kmerto64bithash.cpp"
+#include "32kmerto64bithash.cpp"
 
 namespace multi_index {
   
@@ -70,7 +70,7 @@ public:
         if (errors >= 6) res.reserve(128);
 
         for (auto it = begin; it != end; ++it) {
-          if (hd_spec(q, *it) <= errors) {
+          if (hd_spec(q, *it) <= errors/2) {
             res.push_back(*it);
           }
         }

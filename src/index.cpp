@@ -90,6 +90,11 @@ void warmup_core_and_cache(){
     std::cout<<"warmup "<<cnt<<std::endl;
 }
 
+template<class T>
+bool comp(T a, T b){
+    return a.second < b.second;
+}
+
 int main(int argc, char* argv[]){
     constexpr uint8_t t_b = BLOCKS;
     constexpr uint8_t t_k = K;
@@ -240,7 +245,7 @@ int main(int argc, char* argv[]){
                 cout << "# candidates_per_query = " << ((double)check_cnt)/qry.size() << endl;
                 cout << "# check_cnt_search = " << check_cnt << endl;
             } else {
-                string query_search_results_file = qry_file + "_search_results.txt";
+                string query_search_results_file = qry_file +"_"+ to_string(t_k/2)  +"_search_results.txt";
                 ofstream query_results(query_search_results_file);
                 check_cnt = 0;
                 {
@@ -256,14 +261,8 @@ int main(int argc, char* argv[]){
                             uint64_t hamming_distance = hd_spec(qry[i], result[j]);
                             string original_query_result = reverseHash(result[j], kmer_size);
                             original_query_result.pop_back();
-			    query_results_vector[i].push_back(make_pair(original_query_result, hamming_distance));
-                            
-                            template<class T>
-                            bool comp(T a, T b){
-                                return a.second < b.second;
-                            }
-                            
-                            sort(results_Vector[i].begin(), results_vector[i].end(), comp<pair<string,uint64_t>> );
+			    query_results_vector[i].push_back(make_pair(original_query_result, hamming_distance));               
+                            sort(query_results_vector[i].begin(), query_results_vector[i].end(), comp<pair<string,uint64_t>> );
 			}
 			cout << " processing " << i + 1 << endl;
                     }
@@ -272,10 +271,10 @@ int main(int argc, char* argv[]){
                     cout << "# total_time_for_entire_queries_in_us = " << duration_cast<chrono::microseconds>(stop-start).count() << endl;
                     cout << "saving results in the results file. " << endl;
                     for (size_t i=0; i<qry.size(); ++i){
-                        query_results << "\n\n"<< i<< ": \t" << queries[i].c_str() << endl;
-                        query_results << "\nApproximate Sequences:\n";
+                        query_results << ">"<< i<< ":" << queries[i].c_str();
+                        //query_results << "\nApproximate Sequences:\n";
                         for (size_t j=0; j<query_results_vector[i].size(); ++j){
-                          query_results << "\t\t" << query_results_vector[i][j].first.c_str() << "  " << query_results_vector[i][j].second << endl;
+                          query_results << "" << query_results_vector[i][j].first.c_str() << "  " << query_results_vector[i][j].second << endl;
                       }
                     }
                     query_results.close();   
