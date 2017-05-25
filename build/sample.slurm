@@ -49,5 +49,5 @@ else
 	echo "${query_kmers_file}.hash created.\n"
 fi
 
-./mi_tc_bv_st_red_index_10 ${main_kmers_file}.hash  ${query_kmers_file}.hash 1 0 0 0 19
+./mi_tc_bv_st_red_index_6 ${main_kmers_file}.hash  ${query_kmers_file}.hash 1 0 0 0 19
 

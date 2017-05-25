@@ -253,7 +253,7 @@ int main(int argc, char* argv[]){
                     vector< vector< pair<string,uint64_t> > > query_results_vector(qry.size());
                     vector< string > queries(qry.size());
                     #pragma omp parallel for
-                    for (size_t i=0; i<qry.size(); ++i){
+                    for (size_t i=0; i<20; ++i){
                         auto result = get<0>(pi.match(qry[i]));
                         result = unique_vec(result);
                         queries[i] = reverseHash(qry[i], kmer_size);
