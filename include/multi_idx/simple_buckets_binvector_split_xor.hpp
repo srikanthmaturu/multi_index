@@ -32,7 +32,7 @@ namespace multi_index {
         typedef perm_b_k perm;
         enum {id = t_id};
 
-    protected:  
+    public:
         static constexpr uint8_t init_splitter_bits(size_t i=0){
             return i < perm_b_k::match_len ? perm_b_k::mi_permute_block_widths[t_id][t_b-1-i] + init_splitter_bits(i+1) : 0;
         }

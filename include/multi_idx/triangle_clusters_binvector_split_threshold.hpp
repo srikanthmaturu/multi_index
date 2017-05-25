@@ -33,7 +33,7 @@ namespace multi_index {
         friend std::map<uint64_t,uint64_t> get_bucket_dist<_triangle_clusters_binvector_split_threshold>(const _triangle_clusters_binvector_split_threshold&);
         friend std::map<uint64_t,uint64_t> get_cluster_dist<_triangle_clusters_binvector_split_threshold>(const _triangle_clusters_binvector_split_threshold&);
         friend std::map<uint64_t,uint64_t> get_error_dist<_triangle_clusters_binvector_split_threshold>(const _triangle_clusters_binvector_split_threshold&);
-    private:  
+    public:
         static constexpr uint8_t init_splitter_bits(size_t i=0){
             return i < perm_b_k::match_len ? perm_b_k::mi_permute_block_widths[t_id][t_b-1-i] + init_splitter_bits(i+1) : 0;
         }
