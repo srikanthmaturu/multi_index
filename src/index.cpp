@@ -257,14 +257,22 @@ int main(int argc, char* argv[]){
                         auto result = get<0>(pi.match(qry[i]));
                         result = unique_vec(result);
                         queries[i] = reverseHash(qry[i], kmer_size);
+                        uint8_t minHS = 100;
                         for (size_t j=0; j<result.size(); ++j){
                             uint64_t hamming_distance = hd_spec(qry[i], result[j]);
+                            if(hamming_distance < minHS){
+                                minHS = hamming_distance;
+                                query_results_vector[i].clear();
+                            }
+                            else if(hamming_distance > minHS){
+                                continue;
+                            }
                             string original_query_result = reverseHash(result[j], kmer_size);
                             original_query_result.pop_back();
-			    query_results_vector[i].push_back(make_pair(original_query_result, hamming_distance));               
-                            sort(query_results_vector[i].begin(), query_results_vector[i].end(), comp<pair<string,uint64_t>> );
-			}
-			cout << " processing " << i + 1 << endl;
+			                query_results_vector[i].push_back(make_pair(original_query_result, hamming_distance));
+                            //sort(query_results_vector[i].begin(), query_results_vector[i].end(), comp<pair<string,uint64_t>> );
+			            }
+			            cout << " processing " << i + 1 << endl;
                     }
                     auto stop = timer::now();
                     cout << "# time_per_search_query_in_us = " << duration_cast<chrono::microseconds>(stop-start).count()/(double)qry.size() << endl;
