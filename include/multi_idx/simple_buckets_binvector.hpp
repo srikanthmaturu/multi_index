@@ -60,10 +60,11 @@ namespace multi_index {
             
             auto begin = m_entries.begin() + l;
             auto end = m_entries.begin() + r;
-    
             uint64_t candidates = std::distance(begin,end);
+
             std::vector<entry_type> res;
-            
+            if(candidates == m_entries.size()) return {res, 0};
+
             if(find_only_candidates) return {res, candidates};
             for (auto it = begin; it != end; ++it) {
                if (hd_spec(q, *it) <= errors/2)
