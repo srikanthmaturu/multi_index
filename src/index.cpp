@@ -114,6 +114,7 @@ int main(int argc, char* argv[]){
         cout << " print_header_for_search_only: 0=No (default); 1=Yes" << endl;
         cout << " parallel construction: 0=No (default); 1=Yes" << endl;
         cout << " Kmer size: n" << endl;
+        cout << " Number of kmer blocks: n" << endl;
         return 1;
     }
 
@@ -152,6 +153,7 @@ int main(int argc, char* argv[]){
         bool print_info = false;
         bool async = false;
         uint64_t kmer_size = 31;
+        uint64_t numberOfBlocks = 2;
         
         if ( argc >= 3 ) {
             qry_file = argv[2];
@@ -160,6 +162,7 @@ int main(int argc, char* argv[]){
             if ( argc > 5 ) { print_info  = stoull(argv[5]); }
             if ( argc > 6 ) { async       = stoull(argv[6]); }
             if ( argc > 7 ) { kmer_size   = stoull(argv[7]); }
+            if ( argc > 8 ) { numberOfBlocks   = stoull(argv[8]); }
         } else {
             stringstream linestream(line); 
             linestream >> qry_file;
@@ -252,11 +255,12 @@ int main(int argc, char* argv[]){
                     auto start = timer::now();
                     vector< vector< pair<string,uint64_t> > > query_results_vector(qry.size());
                     vector< string > queries(qry.size());
+                    uint64_t mask = generate_mask(kmer_size, numberOfBlocks);
                     #pragma omp parallel for
                     for (size_t i=0; i<qry.size(); ++i){
                         auto result = get<0>(pi.match(qry[i]));
                         result = unique_vec(result);
-                        queries[i] = reverseHash(qry[i], kmer_size);
+                        queries[i] = reverseHash(qry[i], kmer_size, mask);
                         uint8_t minHS = 100;
                         for (size_t j=0; j<result.size(); ++j){
                             uint64_t hamming_distance = hd_spec(qry[i], result[j]);
@@ -267,7 +271,7 @@ int main(int argc, char* argv[]){
                             else if(hamming_distance > minHS){
                                 continue;
                             }
-                            string original_query_result = reverseHash(result[j], kmer_size);
+                            string original_query_result = reverseHash(result[j], kmer_size, mask);
                             original_query_result.pop_back();
 			                query_results_vector[i].push_back(make_pair(original_query_result, hamming_distance));
                             //sort(query_results_vector[i].begin(), query_results_vector[i].end(), comp<pair<string,uint64_t>> );

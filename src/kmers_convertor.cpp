@@ -13,13 +13,17 @@ int main(int argc, char** argv){
 		cout << "conversion_type = 0: 	file1 is input_sequence_file, file2 is  output_hash_file " <<endl;
 		cout << "converstion_type = 1: file1 is input_hash_file, file2 is output_sequence_file " << endl; 
                 cout << "kmer_size (only for conversion type = 1)" << endl;
+        cout << "Number of kmer blocks: n" << endl;
 		exit(1);
 	}
-	cout << "Conversion started...." << endl;
+    uint64_t kmer_size = stoull(argv[4]);
+    uint64_t numberOfBlocks = stoull(argv[5]);
+
+    cout << "Conversion started...." << endl;
 	if(stoi(argv[1]) ==  0){	
-		sequenceConvertor(argv[2], argv[3]); }
+		sequenceConvertor(argv[2], argv[3], kmer_size, numberOfBlocks); }
 	else {
-            uint64_t kmer_size = stoull(argv[4]);
-		hashConvertor(argv[2], argv[3], kmer_size); 
+
+		hashConvertor(argv[2], argv[3], kmer_size, numberOfBlocks);
 	}
 }

@@ -63,7 +63,7 @@ namespace multi_index {
             uint64_t candidates = std::distance(begin,end);
 
             std::vector<entry_type> res;
-            if(candidates == m_entries.size()) return {res, 0};
+            //if(candidates == m_entries.size()) return {res, 0};
 
             if(find_only_candidates) return {res, candidates};
             for (auto it = begin; it != end; ++it) {

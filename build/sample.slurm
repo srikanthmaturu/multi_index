@@ -36,7 +36,7 @@ then
 	echo "${main_kmers_file}.hash exists. \n"
 else
 	echo "${main_kmers_file}.hash not exists. creating it..."
-	./kmers_convertor 0 $main_kmers_file ${main_kmers_file}.hash
+	./kmers_convertor 0 $main_kmers_file ${main_kmers_file}.hash 19 3
 	echo "${main_kmers_file}.hash created.\n"
 fi
 
@@ -45,9 +45,9 @@ then
 	echo "${query_kmers_file}.hash exists.\n"
 else
 	echo "${query_kmers_file}.hash not exists. creating it..."
-	./kmers_convertor 0 $query_kmers_file ${query_kmers_file}.hash
+	./kmers_convertor 0 $query_kmers_file ${query_kmers_file}.hash 19 3
 	echo "${query_kmers_file}.hash created.\n"
 fi
 
-./mi_bv_red_index_6 ${main_kmers_file}.hash  ${query_kmers_file}.hash 1 0 0 0 19
+./mi_bv_red_index_6 ${main_kmers_file}.hash  ${query_kmers_file}.hash 1 0 0 0 19 3
 
