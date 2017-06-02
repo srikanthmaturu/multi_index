@@ -10,8 +10,6 @@
 #include <math.h>
 #include <omp.h>
 #include "sdsl/bits.hpp"
-#include <x86intrin.h>
-
 
 using namespace std;
 
@@ -45,23 +43,28 @@ uint64_t generate_mask(uint64_t kmerSize, uint64_t numberOfBlocks) {
 
 
 uint64_t expandRight(uint64_t hash, uint64_t mask){
-    /*
+
     uint64_t result=0ULL;
     asm ("pdep %0,%1,%2"
     : "=r" (result)
     : "r" (hash), "r" (mask)
-    );*/
-    return _pdep_u64(hash, mask);
+    );
+    //cout << " Re: " << result << " A:" << _pdep_u64(hash, mask) <<  endl;
+    //return _pdep_u64(hash, mask);
+    cout << " Re: " << result << endl;
+    return result;
 }
 
 uint64_t compressRight(uint64_t hash, uint64_t mask){
-    /*
+
     uint64_t result=0ULL;
     asm ("pext %0,%1,%2"
     : "=r" (result)
     : "r" (hash), "r" (mask)
-    );*/
-    return _pext_u64(hash, mask);
+    );
+    cout << " Re: " << result << endl;
+    //return _pext_u64(hash, mask);
+    return result;
 }
 
 uint64_t computeHash(const char* sequence, int length, uint64_t mask){
