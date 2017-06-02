@@ -41,30 +41,66 @@ uint64_t generate_mask(uint64_t kmerSize, uint64_t numberOfBlocks) {
     return mask;
 }
 
+///////////////////////////////////
+//Bits Deposit and Extract
+///////////////////////////////////
+
+//Parallel Bits Deposit
+//x    HGFEDCBA
+//mask 01100100
+//res  0CB00A00
+//x86_64 BMI2: PDEP
+template <typename Integral>
+constexpr Integral deposit_bits(Integral x, Integral mask) {
+Integral res = 0;
+for(Integral bb = 1; mask != 0; bb += bb) {
+if(x & bb) {
+res |= mask & (-mask);
+}
+mask &= (mask - 1);
+}
+return res;
+}
+
+//Parallel Bits Extract
+//x    HGFEDCBA
+//mask 01100100
+//res  00000GFC
+//x86_64 BMI2: PEXT
+template <typename Integral>
+constexpr Integral extract_bits(Integral x, Integral mask) {
+Integral res = 0;
+for(Integral bb = 1; mask != 0; bb += bb) {
+if(x & mask & -mask) {
+res |= bb;
+}
+mask &= (mask - 1);
+}
+return res;
+}
 
 uint64_t expandRight(uint64_t hash, uint64_t mask){
-
+    /*
     uint64_t result=0ULL;
     asm ("pdep %0,%1,%2"
     : "=r" (result)
     : "r" (hash), "r" (mask)
     );
-    //cout << " Re: " << result << " A:" << _pdep_u64(hash, mask) <<  endl;
-    //return _pdep_u64(hash, mask);
-    cout << " Re: " << result << endl;
-    return result;
+    return _pdep_u64(hash, mask);
+    return result;*/
+    return deposit_bits(hash, mask);
 }
 
 uint64_t compressRight(uint64_t hash, uint64_t mask){
-
+    /*
     uint64_t result=0ULL;
     asm ("pext %0,%1,%2"
     : "=r" (result)
     : "r" (hash), "r" (mask)
     );
-    cout << " Re: " << result << endl;
-    //return _pext_u64(hash, mask);
-    return result;
+    return _pext_u64(hash, mask);
+    return result;*/
+    return extract_bits(hash, mask);
 }
 
 uint64_t computeHash(const char* sequence, int length, uint64_t mask){
