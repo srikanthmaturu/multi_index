@@ -62,10 +62,23 @@ namespace multi_index {
             auto end = m_entries.begin() + r;
             uint64_t candidates = std::distance(begin,end);
 
-            std::vector<entry_type> res;
+            std::vector<entry_type> res, res1;
             //if(candidates == m_entries.size()) return {res, 0};
 
             if(find_only_candidates) return {res, candidates};
+            /*
+            if(candidates > 5000) {
+                for (auto it = begin; it != end; ++it) {
+                    if (sdsl::bits::cnt(q^*it) <= errors)
+                        res1.push_back(*it);
+                }
+                for (auto it = res1.begin(); it != res1.end(); ++it) {
+                    if (hd_spec(q, *it) <= errors/2)
+                        res.push_back(*it);
+                }
+                return {res, candidates};
+            }
+            */
             for (auto it = begin; it != end; ++it) {
                if (hd_spec(q, *it) <= errors/2)
                  res.push_back(*it);

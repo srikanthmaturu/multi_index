@@ -16,9 +16,11 @@ using namespace std;
 uint64_t generate_mask(uint64_t kmerSize, uint64_t numberOfBlocks) {
     uint64_t kmerSpace = kmerSize*2, emptySpace = 64 - kmerSpace;
     uint64_t averageKMERBlockSize = kmerSpace/numberOfBlocks;
-    uint64_t remainderKMERBlock = kmerSpace%numberOfBlocks;
+    if(averageKMERBlockSize%2 != 0) averageKMERBlockSize -= 1;
+    uint64_t remainderKMERBlock = kmerSpace - averageKMERBlockSize*numberOfBlocks;
     uint64_t averageEmptyBlockSize = emptySpace/(numberOfBlocks+1);
-    uint64_t remainderEmptyBlock = emptySpace%(numberOfBlocks+1);
+    if(averageEmptyBlockSize%2 != 0) averageEmptyBlockSize -= 1;
+    uint64_t remainderEmptyBlock = emptySpace - averageEmptyBlockSize*(numberOfBlocks + 1);
     /**
     cout << " kmerSpace: " << kmerSpace << endl;
     cout << " averageKMERBlockSize: " << averageKMERBlockSize <<  endl;

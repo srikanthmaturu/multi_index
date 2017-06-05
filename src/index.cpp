@@ -283,7 +283,8 @@ int main(int argc, char* argv[]){
                     cout << "# total_time_for_entire_queries_in_us = " << duration_cast<chrono::microseconds>(stop-start).count() << endl;
                     cout << "saving results in the results file. " << endl;
                     for (size_t i=0; i<qry.size(); ++i){
-                        query_results << ">"<< i<< ":" << queries[i].c_str();
+                        //query_results << ">"<< i<< ":" << queries[i].c_str();
+                        query_results << ">"<< queries[i].c_str();
                         //query_results << "\nApproximate Sequences:\n";
                         for (size_t j=0; j<query_results_vector[i].size(); ++j){
                           query_results << "" << query_results_vector[i][j].first.c_str() << "  " << query_results_vector[i][j].second << endl;
