@@ -1,14 +1,14 @@
 #!/bin/sh
 #SBATCH --time=24:00:00
-#SBATCH --ntasks-per-node=5
+#SBATCH --ntasks-per-node=1
 #SBATCH --nodes=1
-#SBATCH --mem-per-cpu=8000
+#SBATCH --mem-per-cpu=32000
 #SBATCH --sockets-per-node=1
 #SBATCH --cores-per-socket=1
 #SBATCH --threads-per-core=1
 #SBATCH --job-name=kmers-full-data-multi-index-test
 #SBATCH --error=/work/deogun/smaturu/thesis/multi_index_v2/multi_index/build/job.%J.err
-#SBATCH --error=/work/deogun/smaturu/thesis/multi_index_v2/multi_index/build/job.%J.out
+#SBATCH --output=/work/deogun/smaturu/thesis/multi_index_v2/multi_index/build/job.%J.out
 
 
 alias echo="echo -e"
