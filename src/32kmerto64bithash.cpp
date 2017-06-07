@@ -22,10 +22,8 @@ uint64_t generate_mask(uint64_t kmerSize, uint64_t numberOfBlocks) {
     if(averageEmptyBlockSize%2 != 0) averageEmptyBlockSize -= 1;
     uint64_t remainderEmptyBlock = emptySpace - averageEmptyBlockSize*(numberOfBlocks + 1);
     /**
-    cout << " kmerSpace: " << kmerSpace << endl;
-    cout << " averageKMERBlockSize: " << averageKMERBlockSize <<  endl;
-    cout << " remainderKMERBlock: " << remainderKMERBlock << endl;
-    cout << " averageEmptyBlockSize: " << averageEmptyBlockSize << endl;
+    cout << " kmerSpace: " << kmerSpace << "\n averageKMERBlockSize: " << averageKMERBlockSize <<  endl;
+    cout << " remainderKMERBlock: " << remainderKMERBlock << "\n averageEmptyBlockSize: " << averageEmptyBlockSize << endl;
     cout << " remainderEmptyBlock: " << remainderEmptyBlock << endl;
     **/
     uint64_t mask = 0ULL;
@@ -54,14 +52,14 @@ uint64_t generate_mask(uint64_t kmerSize, uint64_t numberOfBlocks) {
 //x86_64 BMI2: PDEP
 template <typename Integral>
 constexpr Integral deposit_bits(Integral x, Integral mask) {
-Integral res = 0;
-for(Integral bb = 1; mask != 0; bb += bb) {
-if(x & bb) {
-res |= mask & (-mask);
-}
-mask &= (mask - 1);
-}
-return res;
+    Integral res = 0;
+    for(Integral bb = 1; mask != 0; bb += bb) {
+        if(x & bb) {
+            res |= mask & (-mask);
+        }
+        mask &= (mask - 1);
+    }
+    return res;
 }
 
 //Parallel Bits Extract
@@ -71,14 +69,14 @@ return res;
 //x86_64 BMI2: PEXT
 template <typename Integral>
 constexpr Integral extract_bits(Integral x, Integral mask) {
-Integral res = 0;
-for(Integral bb = 1; mask != 0; bb += bb) {
-if(x & mask & -mask) {
-res |= bb;
-}
-mask &= (mask - 1);
-}
-return res;
+    Integral res = 0;
+    for(Integral bb = 1; mask != 0; bb += bb) {
+        if(x & mask & -mask) {
+            res |= bb;
+        }
+        mask &= (mask - 1);
+    }
+    return res;
 }
 
 uint64_t expandRight(uint64_t hash, uint64_t mask){
@@ -181,20 +179,16 @@ void sequenceConvertor(char* sequencefile, char* hashfile, uint64_t kmerSize, ui
 			if(inputfile.eof()){
 				lines.pop_back();
 			}
-			//#pragma omp parallel for
+			#pragma omp parallel for
 			for(uint64_t i=0; i<lines.size(); i++){
 				hashes[i] = computeHash(lines[i].c_str(), lines[i].size(), mask);
 				//cout << hashes[i] << endl;
 			}
-		//cout << " here " << endl;
 		for(uint64_t i = 0; i < lines.size(); i++){
 			outputfile.write((char*)&hashes[i], 8);
 		}
-		//ostream_iterator<uint64_t> output_iterator(outputfile, "");
-		//copy(hashes.begin(), hashes.begin() + lines.size(), output_iterator);
 		lines.clear();			
 		}
-		//cout << " out " << endl;
 	}	
 }
 

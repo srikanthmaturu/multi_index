@@ -19,9 +19,9 @@ int main(int argc, char* argv[]) {
     }
 
     std::string outfilename1 = std::string(argv[1]) + std::string(".SimHash");
-    std::string outfilename2 = std::string(argv[1]) + std::string(".OddSketch");
+    //std::string outfilename2 = std::string(argv[1]) + std::string(".OddSketch");
     std::ofstream file1 (outfilename1.c_str());
-    std::ofstream file2 (outfilename2.c_str());
+    //std::ofstream file2 (outfilename2.c_str());
     
     std::string line;
     uint64_t simhash, oddsketch;
@@ -30,7 +30,7 @@ int main(int argc, char* argv[]) {
          simhash = simhash64(line, window_size);
          oddsketch = oddsketch64(line, window_size);
          file1.write(reinterpret_cast<const char *>(&simhash), sizeof(simhash));
-         file2.write(reinterpret_cast<const char *>(&oddsketch), sizeof(oddsketch));
+         //file2.write(reinterpret_cast<const char *>(&oddsketch), sizeof(oddsketch));
          tot++;
          if(tot % 10000000 == 0) std::cout << "Processed " << tot/1000000 << " Million rows." << std::endl;
     }

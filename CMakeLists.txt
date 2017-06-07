@@ -29,6 +29,21 @@ else()
     message(WARNING "git not found. Cloning of submodules will not work.")
 endif()
 
+set(Boost_USE_STATIC_LIBS ON)
+set(Boost_USE_MULTITHREADED ON)
+set(Boost_USE_STATIC_RUNTIME OFF)
+#set(BOOST_LIBRARYDIR "/usr/lib/x86_64-linux-gnu/")
+find_package(Boost COMPONENTS serialization filesystem REQUIRED)
+if(Boost_FOUND)
+    INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
+    message("Boost Include DIRS: ${Boost_INCLUDE_DIRS} ")
+    message("Boost Libraries DIRS: ${Boost_LIBRARIES_DIRS}")
+    message("Boost Libraries: ${Boost_LIBRARIES}")
+    message("Boost Version: ${Boost_VERSION}")
+else()
+    message("Boost not found")
+endif()
+
 ADD_SUBDIRECTORY(external/sdsl-lite)
 ADD_SUBDIRECTORY(lib)
 
@@ -163,6 +178,39 @@ ADD_CUSTOM_TARGET(exp0
                   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
                   COMMENT "\nResults can be found in ${exp0_result_file}.\nVisualization in file exp0.pdf\n")
 
+
+## Experiment sh: Test SH
+SET(sh_exp_result_file "${CMAKE_BINARY_DIR}/results/sh_exp.result.txt")
+SET(sh_exp_results "")
+
+FILE(STRINGS ${CMAKE_HOME_DIRECTORY}/sh_exp.config sh_exp_lines REGEX "^[^#].*")
+FOREACH(line ${sh_exp_lines})
+    MESSAGE("line = ${line}")
+    LIST(GET line 0 index_name)
+    LIST(GET line 1 index_type)
+    LIST(GET line 2 errors)
+    LIST(GET line 3 WS)
+    STRING(REPLACE "," ";" error_list ${errors})
+    MESSAGE("SH Exp ${index_name}; ${index_type}; ${error_list}; ${WS}")
+    FOREACH(t_k ${error_list})
+        STRING(REGEX REPLACE "([,<])t_k([,>])" "\\1${t_k}\\2" type ${index_type})
+        GEN_PERM_FILE(${type} blocks)
+        SET(exec ${index_name}_index_${t_k})
+        MESSAGE("Target: ${exec} ")
+        STRING(CONCAT sh_index_type "sim_hash_idx<${index_type},${WS}>")
+        IF(NOT TARGET ${exec})
+            ADD_EXECUTABLE(${exec} src/index_sh.cpp)
+            TARGET_LINK_LIBRARIES(${exec} sdsl -ggdb divsufsort divsufsort64 multi_idx pthread ${Boost_LIBRARIES})
+            SET_PROPERTY(TARGET ${exec} PROPERTY COMPILE_DEFINITIONS
+                    BLOCKS=${blocks}
+                    K=${t_k}
+                    INDEX_TYPE=${index_type}
+                    SH_INDEX_TYPE=${sh_index_type}
+                    INDEX_NAME="${index_name}")
+        ENDIF()
+    ENDFOREACH()
+ENDFOREACH()
+
 ## Experiment 1: Measure the efficiency of the searching phase
 SET(exp1_result_file "${CMAKE_BINARY_DIR}/results/exp1.result.txt")
 SET(exp1_results "")
@@ -221,7 +269,7 @@ ADD_CUSTOM_TARGET(exp1
 #SET(exp2_results "")
 #
 #
-#FILE(STRINGS ${CMAKE_HOME_DIRECTORY}/exp2.config exp2_lines REGEX "^[^#].*")
+#FILE(STRINGS ${CMAKE_HOME_DIRECTORY}/sh_exp.config exp2_lines REGEX "^[^#].*")
 #FOREACH(line ${exp2_lines})
 #    LIST(GET line 0 index_name)
 #    LIST(GET line 1 index_type)
