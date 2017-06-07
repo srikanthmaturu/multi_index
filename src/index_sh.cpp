@@ -21,7 +21,7 @@ using namespace std;
 using namespace std::chrono;
 using timer = std::chrono::high_resolution_clock;
 
-const string index_name = "hello";
+const string index_name = INDEX_NAME;
 string filtered_index_name;
 
 template<class duration_type=std::chrono::seconds>

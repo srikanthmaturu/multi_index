@@ -68,7 +68,6 @@ public:
 
     void construct_index(vector<uint64_t>& keys){
          mi = std::move(m_idx_type(keys));
-        cout << "partly complete." << endl;
     }
 
     void load_idx(std::string idx_file) {
