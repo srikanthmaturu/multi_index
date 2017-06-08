@@ -39,12 +39,9 @@ public:
 
     vector<string> match(string& qry){
         vector<string> res;
-        for(auto rh:get<0>(mi.match(simhash64(qry, ws)))){
+        for(auto rh:unique_vec(get<0>(mi.match(simhash64(qry, ws))))){
             auto r = hash_sequence_map[rh];
             res.insert(res.end(), r.begin(), r.end());
-            for(string r1: r){
-                cout << r << endl;
-            }
         }
         return res;
     }
@@ -53,6 +50,15 @@ public:
         for(string sequence:sequences){
             hashes.push_back(simhash64(sequence, ws));
         }
+    }
+
+    vector<uint64_t> unique_vec(vector<uint64_t> v){
+        if(v.size()>0){
+            std::sort(v.begin(), v.end());
+            auto end = std::unique(v.begin(), v.end());
+            v.resize(end-v.begin());
+        }
+        return v;
     }
 
     void constuct_map(vector<string>& sequences, vector<uint64_t>& hashes, unordered_map<uint64_t, vector<string>>& hash_sequence_map){
@@ -65,8 +71,20 @@ public:
             }
             else {
                 hash_sequence_map[hash].push_back(sequences[i]);
+                auto it = std::unique(hash_sequence_map[hash].begin(), hash_sequence_map[hash].end());
+                hash_sequence_map[hash].resize(std::distance(hash_sequence_map[hash].begin(), it));
             }
         }
+        /*for(auto it= hash_sequence_map.begin(); it!=hash_sequence_map.end(); ++it){
+            if(hash_sequence_map.count((*it).first) > 0){
+                auto res = hash_sequence_map[(*it).first];
+                cout << "hash: "<< (*it).first << " ";
+                for(auto i: res){
+                    cout << "  seq: " << i << " ";
+                }
+                cout << endl;
+            }
+        }*/
     }
 
     void construct_index(vector<uint64_t>& keys){
@@ -93,16 +111,27 @@ public:
         ifstream map_file_ifs(map_file);
         boost::archive::binary_iarchive ia(map_file_ifs);
         ia >> hash_sequence_map;
+        /*for(auto it= hash_sequence_map.begin(); it!=hash_sequence_map.end(); ++it){
+            if(hash_sequence_map.count((*it).first) > 0){
+                auto res = hash_sequence_map[(*it).first];
+                cout << "hash: "<< (*it).first << " ";
+                for(auto i: res){
+                    cout << "  seq: " << i << " ";
+                }
+                cout << endl;
+            }
+        }*/
     }
 
     void load_from_files(std::string idx_file, std::string map_file){
         load_idx(idx_file);
+        cout << "IDX loaded from file." << endl;
         load_map(map_file);
+        cout << "Map file loaded from file." << endl;
     }
 
     void store_to_files(std::string idx_file, std::string map_file){
         serialize_idx(idx_file);
         serialize_map(map_file);
     }
-
 };

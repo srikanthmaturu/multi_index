@@ -116,7 +116,7 @@ int main(int argc, char* argv[]){
             cout<< "Index construction completed." << endl;
             cout << "# total_time_to_construct_index_in_us :- " << duration_cast<chrono::microseconds>(index_construction_end_time-index_construction_begin_time).count() << endl;
         } else {
-            cout << " Index already exists. Using the existing index." << endl;
+            cout << "Index already exists. Using the existing index." << endl;
         }
 
         pi.load_from_files(idx_file, map_file);

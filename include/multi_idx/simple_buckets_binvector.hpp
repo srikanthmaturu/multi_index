@@ -80,8 +80,11 @@ namespace multi_index {
             }
             */
             for (auto it = begin; it != end; ++it) {
-               if (hd_spec(q, *it) <= errors/2)
-                 res.push_back(*it);
+               /*if (hd_spec(q, *it) <= errors/2)
+                 res.push_back(*it);*/
+                if (sdsl::bits::cnt(q^*it) <= errors) {
+                    res.push_back(*it);
+                }
             }
             return {res, candidates};
         }

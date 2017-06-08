@@ -16,7 +16,7 @@ alias echo="echo -e"
 fasta_query_file="../data/test2.fa"
 main_kmers_file="../data/KMER_19"
 query_kmers_file=${fasta_query_file}_query_kmers_file
-no_of_blocks=4
+
 
 echo "Fasta query file $fasta_query_file ."
 echo "Main kmers file $main_kmers_file ."
