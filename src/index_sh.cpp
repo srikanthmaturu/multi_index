@@ -92,8 +92,9 @@ int main(int argc, char* argv[]){
 
     string sequences_file = argv[1];
     string queries_file = argv[2];
-    string idx_file = idx_file_trait<t_b,t_k,INDEX_TYPE>::value(sequences_file);
-    string map_file = sequences_file + "_sh_map";
+    string queries_results_file = queries_file + "_search_results.txt";
+    string idx_file = idx_file_trait<t_b,t_k,INDEX_TYPE>::value(sequences_file) + "_WS" + to_string(WS);
+    string map_file = sequences_file + "_sh_map_WS" + to_string(WS);
     sh_index_type pi;
 
     {
@@ -123,12 +124,15 @@ int main(int argc, char* argv[]){
 
         vector<string> queries;
         load_sequences(queries_file, queries);
-        for(string qry: queries){
-            cout << ">" << qry << endl;
+        ofstream results_file(queries_results_file);
+	uint64_t i=0;
+	for(string qry: queries){
+	    results_file << ">" << qry << endl;
             vector<string> res = pi.match(qry);
             for(string r: res){
-                cout << r << endl;
+                results_file << r << endl;
             }
+	    cout << "processed query " << i++ << endl;
         }
     }
 

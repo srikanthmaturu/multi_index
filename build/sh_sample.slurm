@@ -15,8 +15,8 @@ alias echo="echo -e"
 
 fasta_query_file="../data/test2.fa"
 main_kmers_file="../data/KMER_19"
-query_kmers_file=${fasta_query_file}_query_kmers_file
-
+#query_kmers_file=${fasta_query_file}_query_kmers_file
+query_kmers_file="../data/t.txt"
 
 echo "Fasta query file $fasta_query_file ."
 echo "Main kmers file $main_kmers_file ."
@@ -31,5 +31,5 @@ else
 	echo "$query_kmers_file created.\n"
 fi
 
-./sh_mi_bv_red_index_6 ${main_kmers_file}  ${query_kmers_file}
+./sh_mi_bv_red_index_10_ws3 ${main_kmers_file}  ${query_kmers_file}
 
