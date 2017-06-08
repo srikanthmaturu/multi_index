@@ -42,6 +42,9 @@ public:
         for(auto rh:get<0>(mi.match(simhash64(qry, ws)))){
             auto r = hash_sequence_map[rh];
             res.insert(res.end(), r.begin(), r.end());
+            for(string r1: r){
+                cout << r << endl;
+            }
         }
         return res;
     }
