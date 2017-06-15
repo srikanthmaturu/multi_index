@@ -16,7 +16,8 @@ alias echo="echo -e"
 fasta_query_file="../data/test2.fa"
 main_kmers_file="../data/KMER_19"
 query_kmers_file=${fasta_query_file}_query_kmers_file
-no_of_blocks=4
+#query_kmers_file=${fasta_query_file}
+no_of_blocks=3
 
 echo "Fasta query file $fasta_query_file ."
 echo "Main kmers file $main_kmers_file ."
@@ -50,5 +51,5 @@ else
 fi
 
 export OMP_NUM_THREADS=8
-./mi_bv_red_index_10 ${main_kmers_file}.hash  ${query_kmers_file}.hash 1 0 0 0 19 ${no_of_blocks}
+./mi_bv_red_index_6 ${main_kmers_file}.hash  ${query_kmers_file}.hash 1 0 0 0 19 ${no_of_blocks}
 
